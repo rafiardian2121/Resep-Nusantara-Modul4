@@ -1,8 +1,8 @@
 // src/components/home/FeaturedMinumanSection.jsx
-import { Clock, Star, Coffee } from 'lucide-react';
+import { Clock, Star, Coffee, Heart } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
-export default function FeaturedMinumanSection({ featuredMinuman }) {
+export default function FeaturedMinumanSection({ featuredMinuman, onSelectRecipe, isFavorite, toggleFavorite }) {
   const [visibleMinuman, setVisibleMinuman] = useState(new Set());
   const minumanRefs = useRef([]);
 
@@ -50,7 +50,10 @@ export default function FeaturedMinumanSection({ featuredMinuman }) {
                 : 'translate-y-8 opacity-0'
             }`}
           >
-            <div className="relative bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg md:shadow-2xl shadow-indigo-500/5 hover:shadow-indigo-500/15 transition-all duration-500 cursor-pointer group-hover:scale-105 group-hover:bg-white/20">
+            <div
+              onClick={() => onSelectRecipe('minuman', recipe)}
+              className="relative bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg md:shadow-2xl shadow-indigo-500/5 hover:shadow-indigo-500/15 transition-all duration-500 cursor-pointer group-hover:scale-105 group-hover:bg-white/20"
+            >
               
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
@@ -60,6 +63,8 @@ export default function FeaturedMinumanSection({ featuredMinuman }) {
                   <img 
                     src={recipe.image_url}
                     alt={recipe.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
@@ -78,6 +83,22 @@ export default function FeaturedMinumanSection({ featuredMinuman }) {
                   <h3 className="font-bold text-slate-800 mb-2 md:mb-4 text-sm md:text-xl group-hover:text-indigo-600 transition-colors duration-200 line-clamp-2">
                     {recipe.name}
                   </h3>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(`minuman-${recipe.id}`, {
+                        id: recipe.id,
+                        name: recipe.name,
+                        image_url: recipe.image_url,
+                        type: 'minuman',
+                      });
+                    }}
+                    className="self-start mb-3 inline-flex items-center gap-2 text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full hover:scale-105 transition"
+                  >
+                    <Heart className={`w-4 h-4 ${isFavorite(`minuman-${recipe.id}`) ? 'fill-red-500 text-red-500' : ''}`} />
+                    {isFavorite(`minuman-${recipe.id}`) ? 'Favorit' : 'Tambah ke favorit'}
+                  </button>
                   
                   <div className="flex items-center justify-between text-xs md:text-sm text-slate-600">
                     <div className="flex items-center space-x-1 md:space-x-2 bg-white/70 px-2 md:px-3 py-1 md:py-2 rounded-full">

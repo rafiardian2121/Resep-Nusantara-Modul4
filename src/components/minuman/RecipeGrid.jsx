@@ -1,8 +1,8 @@
 // src/components/minuman/RecipeGrid.jsx
-import { Clock, Star, ChefHat } from 'lucide-react';
+import { Clock, Star, ChefHat, Heart } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
-export default function RecipeGrid({ recipes }) {
+export default function RecipeGrid({ recipes, onSelectRecipe, toggleFavorite, isFavorite }) {
   const [visibleCards, setVisibleCards] = useState(new Set());
   const cardRefs = useRef([]);
 
@@ -52,15 +52,35 @@ export default function RecipeGrid({ recipes }) {
             }`}
           >
             {/* Card structure is consistent, only the tag is changed */}
-            <div className="relative bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg md:shadow-2xl shadow-green-500/5 hover:shadow-green-500/15 transition-all duration-500 cursor-pointer group-hover:scale-105 group-hover:bg-white/20">
+            <div
+              onClick={() => onSelectRecipe('minuman', recipe)}
+              className="relative bg-white/15 backdrop-blur-xl border border-white/25 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg md:shadow-2xl shadow-green-500/5 hover:shadow-green-500/15 transition-all duration-500 cursor-pointer group-hover:scale-105 group-hover:bg-white/20"
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-green-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative h-32 md:h-56 overflow-hidden">
                 <img 
                   src={recipe.image_url}
                   alt={recipe.name}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(`minuman-${recipe.id}`, {
+                      id: recipe.id,
+                      name: recipe.name,
+                      image_url: recipe.image_url,
+                      type: 'minuman',
+                    });
+                  }}
+                  className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center bg-white/80 backdrop-blur rounded-full shadow-lg hover:scale-110 transition"
+                  aria-label="Tandai favorit"
+                >
+                  <Heart className={`w-5 h-5 ${isFavorite(`minuman-${recipe.id}`) ? 'text-red-500 fill-red-500' : 'text-slate-600'}`} />
+                </button>
               </div>
               <div className="relative z-10 p-4 md:p-8">
                 <div className="flex items-center justify-between mb-3 md:mb-4">
